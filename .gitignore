@@ -31,3 +31,7 @@
 *.out
 *.app
 main
+
+# Clangd cache
+.cache
+compile_commands.json
