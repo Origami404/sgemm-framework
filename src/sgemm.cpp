@@ -18,14 +18,11 @@ void sgemm(
     float *b, int ldb,
     float *c, int ldc
 ) {
-
+    for (int kk = 0; kk < k; ++kk) {
     for (int ii = 0; ii < m; ++ii) {
-        for (int jj = 0; jj < n; ++jj) {
-            for (int kk = 0; kk < k; ++kk) {
-                C(ii, jj) += A(ii, kk) * B(kk, jj);
-            }
-        }
-    }
+    for (int jj = 0; jj < n; ++jj) {
+        C(ii, jj) += A(ii, kk) * B(kk, jj);
+    }}}
 }
 
 } // lib

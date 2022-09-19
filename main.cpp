@@ -15,16 +15,14 @@
 
 using Clock = std::chrono::system_clock;
 
-#define M 1024
-#define N 1024
-#define K 1024
-#ifdef BASELINE
-#define WARMUP_ROUND 0
-#define HOT_ROUND 1
-#else
-#define WARMUP_ROUND 0
-#define HOT_ROUND 1
-#endif
+
+// #ifdef BASELINE
+// #define WARMUP_ROUND 0
+// #define HOT_ROUND 1
+// #else
+// #define WARMUP_ROUND 2
+// #define HOT_ROUND 5
+// #endif
 #define CHECK_THRESHOLD 1e-5
 
 void baseline_sgemm(int m, int n, int k, float *a, int lda, float *b, int ldb, float *c, int ldc)
@@ -58,7 +56,7 @@ void gemm(int m, int n, int k, float *a, int lda, float *b, int ldb, float *c, i
 #endif
 }
 
-int main(int argc, char const *argv[])
+void test(int M, int N, int K, int WARMUP_ROUND, int HOT_ROUND)
 {
     // Init
     float *A = (float *)_mm_malloc(sizeof(float) * M * K, 4096);
@@ -93,6 +91,7 @@ int main(int argc, char const *argv[])
     double GFLOPS = FLOPS / 1024 / 1024 / 1024;
 
     // Output result
+    std::cout << "\033[32m" << "Test for: N = " << N << ", M = " << M << ", K = " << K << "\033[0m" << std::endl;
     std::cout << "Time consumed: " << time_in_sec << " s"
               << "\n";
     std::cout << "SGEMM performance: " << GFLOPS << " GFlops" << std::endl;
@@ -132,6 +131,13 @@ int main(int argc, char const *argv[])
         std::cout << "Correct value: " << C_ref[check_i * N + check_j] << " ";
     }
     std::cout << std::endl;
+}
+
+int main() {
+    for (int i = 32; i <= 512; i <<= 1) {
+        test(i, i, i, 20, 50);
+    }
+    test(1024, 1024, 1024, 2, 5);
 
     return 0;
 }
